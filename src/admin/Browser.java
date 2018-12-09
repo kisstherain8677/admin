@@ -1,5 +1,7 @@
 package admin;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Browser extends User {
@@ -14,13 +16,18 @@ public class Browser extends User {
 		System.out.println("请输入新密码");
 		Scanner in = new Scanner(System.in);
 		String newp = in.nextLine();
-		super.changeSelfInfo(newp);
+		try {
+			super.changeSelfInfo(newp);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		
 	}
 
 	@Override
-	public void showMenu() {
+	public void showMenu()  {
 		System.out.println("Welcome,Browser.");
 		
 		while (true) {
@@ -36,21 +43,33 @@ public class Browser extends User {
 			int input = scanner.nextInt();
 			
 			switch(input) {
-			default: break;
+			default: System.out.println("无效的输入");break;
 			case 0:
 				 exitSystem();
+				 scanner.close();
 				 break;
 			case 1:
 				changeSelfInfo();
 				break;
 			case 2:
-				showFileList();
+				try {
+					showFileList();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					System.out.println(e.toString());
+				}
 				break;
 			case 3:
 				System.out.println("请输入要下载的文件名。");
 				Scanner fileIn = new Scanner(System.in);
 				String filename = fileIn.nextLine();
-				downloadFile(filename);
+				try {
+					downloadFile(filename);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					System.out.println(e.toString());
+				}
+				
 				break;
 			
 			}

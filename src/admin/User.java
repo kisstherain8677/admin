@@ -1,5 +1,14 @@
 package admin;
 
+import java.sql.SQLException;
+import java.util.Enumeration;
+import java.util.Scanner;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+
 public abstract class User {
 	private String name;
 	private String password;
@@ -11,9 +20,9 @@ public abstract class User {
 		this.role=role;				
 	}
 	
-	public boolean changeSelfInfo(String password){
+	public boolean changeSelfInfo(String password) throws SQLException{
 		//写用户信息到存储
-		if (DataProcessing.update(name, password, role)){
+		if (DataProcessing.updateUser(name, password, role)){
 			this.password=password;
 			System.out.println("修改成功");
 			return true;
@@ -21,16 +30,57 @@ public abstract class User {
 			return false;
 	}
 	
-	public abstract void showMenu();
-	
-	public boolean downloadFile(String filename){
-		System.out.println("下载文件... ...");
+	public boolean downloadFile(String id) throws IOException{
+		double ranValue=Math.random();
+		if (ranValue>0.9)
+			throw new IOException( "Error in accessing file" );
+		
+		Scanner in = new Scanner(System.in);
+		System.out.println("Please input the path you want to download to.");
+		String path = in.nextLine();
+		try {
+			String filename = DataProcessing.searchDoc(id).getFilename();
+			FileInputStream fin = new FileInputStream("D://server//"+filename);
+			int i,j = 0;
+			byte[] content = new byte[fin.available()];
+			while((i = fin.read())!=-1) {
+				content[j] = (byte) i;
+				j++;
+			fin.close();
+				
+			File file = new File(path+"//"+filename);
+			FileOutputStream fout = new FileOutputStream(file);	
+			for(int i1 =0;i1<content.length;i1++) {
+				fout.write(content[i1]);
+				
+			}
+			System.out.println("下载成功！");
+			fout.close();
+				
+			}
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		
+		
 		return true;
 	}
 	
-	public void showFileList(){
-		System.out.println("列表... ...");
+	public void showFileList() throws SQLException{
+		double ranValue=Math.random();
+		if (ranValue>0.9)
+			throw new SQLException( "Error in accessing file DB" );
+		Enumeration <Doc> e =DataProcessing.getAllDocs();
+		System.out.println("列表如下：");
+		while(e.hasMoreElements()) {
+			Doc next = e.nextElement();
+			System.out.println(next.toString());
+			
+		}
+		
 	}
+	
+	public abstract void showMenu() ;
 	
 	public void exitSystem(){
 		System.out.println("系统退出, 谢谢使用 ! ");
