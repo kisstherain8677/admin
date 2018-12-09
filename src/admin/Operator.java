@@ -1,5 +1,14 @@
 package admin;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Scanner;
 
 public class Operator extends User {
@@ -25,21 +34,32 @@ while (true) {
 			int input = scanner.nextInt();
 			
 			switch(input) {
-			default: break;
+			default: System.out.println("无效的输入");break;
 			case 0:
-				 exitSystem();
+				scanner.close();
+				exitSystem();
 				 break;
 			case 1:
 				changeSelfInfo();
 				break;
 			case 2:
-				showFileList();
+				try {
+					showFileList();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					System.out.println(e.toString());
+				}
 				break;
 			case 3:
-				System.out.println("请输入要下载的文件名");
+				System.out.println("请输入要下载的文件id");
 				Scanner fileIn = new Scanner(System.in);
 				String filename = fileIn.nextLine();
-				downloadFile(filename);
+				try {
+					downloadFile(filename);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					System.out.println(e.toString());
+				}
 				break;
 			case 4:
 				uploadFile();
@@ -54,17 +74,68 @@ while (true) {
 		System.out.println("请输入新密码");
 		Scanner in = new Scanner(System.in);
 		String newp = in.nextLine();
-		super.changeSelfInfo(newp);
-		
+		try {
+			super.changeSelfInfo(newp);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.toString());
+		}
+		in.close();
 		
 	}
 	
 	public void  uploadFile() {
 		
-		System.out.println("......upload complete.");
+		System.out.println("please input the filename.");
+		Scanner in = new Scanner(System.in);
+		String filename = in.nextLine();
+		System.out.println("Please input the ID");
+		String id = in.nextLine();
+		System.out.println("Please input the creator");
+		String creator = in.nextLine();
+		System.out.println("Please input the description");
+		String description = in.nextLine();
+		
+		
+			try {
+				File file = new File("D://client//"+filename);
+				FileInputStream fin = new FileInputStream(file);//自动编码转换
+				int i,j=0;
+				byte[] content = new byte[fin.available()];
+				while((i = fin.read())!=-1) {
+					content[j] = (byte)i;
+					j++;
+				}
+				System.out.println("文件内容："+new String(content));
+				fin.close();
+				
+				
+				
+				File cfile = new File("D://server//"+filename);
+				FileOutputStream fout = new FileOutputStream(cfile);
+				for(int i1=0;i1<content.length;i1++) {
+					fout.write(content[i1]);
+				}
+				fout.close();
+				
+			}catch (IOException e) {
+				System.out.println(e.getMessage());
+			}
+		
+			
+			try {
+				DataProcessing.insertDoc(id, creator, new Timestamp(System.currentTimeMillis()), description, filename);
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		System.out.println("upload complete.");
+		}
+		
 		
 	}
 	
 	
 
-}
+
