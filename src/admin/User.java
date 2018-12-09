@@ -3,6 +3,16 @@ package admin;
 import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.Scanner;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JTextField;
+
+import admin_frame.LoginFrame;
+import admin_frame.selfFrame;
+
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -20,24 +30,54 @@ public abstract class User {
 		this.role=role;				
 	}
 	
-	public boolean changeSelfInfo(String password) throws SQLException{
-		//写用户信息到存储
-		if (DataProcessing.updateUser(name, password, role)){
-			this.password=password;
-			System.out.println("修改成功");
-			return true;
-		}else
-			return false;
+	public void  changeSelfInfo() {
+		JFrame selfframe = new selfFrame();
+		JTextField userNameText= (JTextField) selfframe.getContentPane().getComponent(5);
+		JTextField userRole = (JTextField) selfframe.getContentPane().getComponent(9);
+		JTextField oldCode = (JTextField)selfframe.getContentPane().getComponent(6);
+		JTextField newCode = (JTextField)selfframe.getContentPane().getComponent(7);
+		JTextField cirnewCode = (JTextField)selfframe.getContentPane().getComponent(8);
+		JButton okButton = (JButton)selfframe.getContentPane().getComponent(10);
+		JButton canclButton = (JButton)selfframe.getContentPane().getComponent(11);
+		
+		userNameText.setEditable(false);
+		userRole.setEditable(false);
+		userNameText.setText(this.getName());
+		userRole.setText(this.getRole());
+		User user = LoginFrame.getUser();
+		
+		canclButton.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent arg0) {
+				selfframe.dispose();
+			}
+		});
+		
+		okButton.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent arg0) {
+				if(oldCode.getText().equals(user.getPassword())) {
+					if(newCode.getText().equals(cirnewCode.getText())) {
+						try {
+							DataProcessing.updateUser(user.getName(), newCode.getText(), user.getRole());
+							selfframe.dispose();
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					else {System.out.println("两次密码输入不一致");}
+				}else {System.out.println("原密码输入有误");}
+			}
+		});
+		
+		selfframe.setVisible(true);
 	}
 	
-	public boolean downloadFile(String id) throws IOException{
+	public boolean downloadFile(String id,String path) throws IOException{
 		double ranValue=Math.random();
 		if (ranValue>0.9)
 			throw new IOException( "Error in accessing file" );
 		
 		Scanner in = new Scanner(System.in);
-		System.out.println("Please input the path you want to download to.");
-		String path = in.nextLine();
 		try {
 			String filename = DataProcessing.searchDoc(id).getFilename();
 			FileInputStream fin = new FileInputStream("D://server//"+filename);

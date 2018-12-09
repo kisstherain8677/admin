@@ -20,8 +20,7 @@ class Doc implements Serializable{
 	}
 	
 	public String toString() {
-		return ID+"  filename:"+filename+
-					"  creator:"+creator+"  timestamp:"+timestamp+"  discription:"+description;
+		return ID+","+filename+","+creator+","+timestamp+","+description;
 	}
 	
 

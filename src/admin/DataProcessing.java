@@ -25,6 +25,8 @@ public  class DataProcessing {
 		
 	}
 	
+	
+	
 	public static  void Init(){
 		// connect to database
 		
@@ -180,8 +182,7 @@ public  class DataProcessing {
    }           
 
 	
-	public static void main(String[] args) {		
-
-	}
+	
+	
 	
 }

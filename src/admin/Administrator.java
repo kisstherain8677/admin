@@ -1,8 +1,18 @@
 package admin;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.Scanner;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JTextField;
+
+import admin_frame.LoginFrame;
+import admin_frame.mainFrame;
+import admin_frame.selfFrame;
 public class Administrator extends User {
 
 	Administrator(String name, String password, String role) {
@@ -10,67 +20,18 @@ public class Administrator extends User {
 		// TODO Auto-generated constructor stub
 	}
 
+	
 	public void showMenu() {
-		
-		while (true) {
-		
-		System.out.println("Welcome,administrator.Please chose.");
-		System.out.println("1------修改我的信息");
-		System.out.println("2------显示可下载文件");
-		System.out.println("3------下载文件");
-		System.out.println("4------显示所有用户");
-		System.out.println("5------添加用户");
-		System.out.println("6------删除用户");
-		System.out.println("7------修改用户信息");
-		System.out.println("0------退出系统");
-		
-		System.out.println("请输入选项");
-		Scanner scanner = new Scanner(System.in);
-		int input = scanner.nextInt();
-		
-		switch(input) {
-		default:System.out.println("无效的输入");break;
-		case 0:
-			scanner.close();
-			 exitSystem();
-			 break;
-		case 1:
-			changeSelfInfo();
-			break;
-		case 2:
-			try {
-				showFileList();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				System.out.println(e.toString());
-			}
-			break;
-		case 3:
-			System.out.println("请输入要下载的文件名。");
-			Scanner fileIn = new Scanner(System.in);
-			String filename = fileIn.nextLine();
-			try {
-				downloadFile(filename);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				System.out.println(e.toString());
-			}
-			break;
-		case 4:
-			listUser();
-			break;
-		case 5:
-			addUser();
-			break;
-		case 6:
-			delUser();
-			break;
-		case 7:
-			changeUserInfo();
-			break;
-		}
-		}
+		try {
+			JFrame mainFrame = new mainFrame();
+			mainFrame.setVisible(true);
+			
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
 	}
+	}
+	
+
 	
 	
 	public Boolean changeUserInfo()  {
@@ -183,20 +144,10 @@ public class Administrator extends User {
 
 	}
 	
-	public void changeSelfInfo() {
-		System.out.println("请输入新密码");
-		Scanner in = new Scanner(System.in);
-		String newp = in.nextLine();
-		try {
-			super.changeSelfInfo(newp);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			System.out.println(e.toString());
-		}
-		
-		
-	}
-	
+//	public void changeSelfInfo() {
+//
+//	}
+//	
 	
 	
 
