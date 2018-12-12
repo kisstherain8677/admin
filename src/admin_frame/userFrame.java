@@ -57,8 +57,9 @@ public class userFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
 	 */
-	public userFrame() throws SQLException {
+	public userFrame() throws SQLException, ClassNotFoundException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -97,10 +98,6 @@ public class userFrame extends JFrame {
 		panel_add.add(addCode);
 		
 		JButton addConButton = new JButton("确认添加");
-		addConButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
 		addConButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
@@ -109,7 +106,7 @@ public class userFrame extends JFrame {
 				String role = (String)addType.getSelectedItem();
 				try {
 					DataProcessing.insertUser(name, code, role);
-				} catch (SQLException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -157,8 +154,10 @@ public class userFrame extends JFrame {
 			count++;
 		}
 		String[] user = new String[count];
+		e = DataProcessing.getAllUser();//用has-next后指针已经改变
 		for(int i=0;e.hasMoreElements();i++) {
-			user[i] = e.nextElement().getName();
+			User u = e.nextElement();
+			user[i] = u.getName();
 		}
 		
 		JComboBox changeUserBox = new JComboBox(user);
@@ -183,7 +182,7 @@ public class userFrame extends JFrame {
 				String type = (String)changeTypeCombo.getSelectedItem(); 
 				try {
 					DataProcessing.updateUser(name, code,type);
-				} catch (SQLException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -240,7 +239,7 @@ public class userFrame extends JFrame {
 					{DataProcessing.deleteUser(name);
 					System.out.println("删除成功");}
 					else System.out.println("密码不正确");
-				} catch (SQLException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}

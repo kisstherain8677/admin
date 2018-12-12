@@ -1,22 +1,25 @@
 package admin;
 
 import java.io.Serializable;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 
 class Doc implements Serializable{
 	private String ID;
 	private String creator;
-	private Timestamp timestamp;
+	private String timestamp;
 	private String description;
 	private String filename;
 	
-	public Doc(String ID, String creator, Timestamp timestamp, String description, String filename) {
+	public Doc(String ID, String creator, String timestamp, String description, String filename) {
 		super();
 		this.ID = ID;
 		this.creator = creator;
 		this.timestamp = timestamp;
 		this.description = description;
-		this.filename=filename;
+		this.filename=filename;;
 	}
 	
 	public String toString() {
@@ -40,11 +43,11 @@ class Doc implements Serializable{
 		this.creator = creator;
 	}
 
-	public Timestamp getTimestamp() {
+	public String getTimestamp() {
 		return timestamp;
 	}
 
-	public void setTimestamp(Timestamp timestamp) {
+	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
 

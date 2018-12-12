@@ -66,7 +66,7 @@ public class mainFrame extends JFrame {
 					userFrame userframe = new userFrame();
 					userframe.setVisible(true);
 					
-				} catch (SQLException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -82,7 +82,7 @@ public class mainFrame extends JFrame {
 					userFrame userframe = new userFrame();
 					userframe.setVisible(true);
 					
-				} catch (SQLException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -98,7 +98,7 @@ public class mainFrame extends JFrame {
 					userFrame userframe = new userFrame();
 					userframe.setVisible(true);
 					
-				} catch (SQLException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -137,7 +137,7 @@ public class mainFrame extends JFrame {
 				try {
 					ff = new fileFrame();
 					ff.setVisible(true);
-				} catch (SQLException e1) {
+				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}

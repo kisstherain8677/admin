@@ -133,7 +133,7 @@ public class Operator extends User {
 			try {
 				DataProcessing.insertDoc(id, creator, new Timestamp(System.currentTimeMillis()), description, filename);
 				
-			} catch (SQLException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

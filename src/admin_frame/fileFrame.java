@@ -36,7 +36,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextArea;
 
 public class fileFrame extends JFrame {
-
+	
+	
 	 private int  selectedRow=-1;
 	private JPanel contentPane;
 	private JTabbedPane tabbedPane;
@@ -66,8 +67,10 @@ public class fileFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
 	 */
-	public fileFrame() throws SQLException  {
+	public fileFrame() throws SQLException, ClassNotFoundException  {
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -189,7 +192,7 @@ public class fileFrame extends JFrame {
 				try {
 					DataProcessing.insertDoc(num, creator, timestamp, description,docname);
 					fileFrame.this.repaint();
-				} catch (SQLException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -222,7 +225,7 @@ public class fileFrame extends JFrame {
 		
 	}
 	
-	String[][] getTableValues(String[] columnNames) throws SQLException{
+	String[][] getTableValues(String[] columnNames) throws SQLException, ClassNotFoundException{
 		 int count ;
 			
 			Enumeration et = DataProcessing.getAllDocs();

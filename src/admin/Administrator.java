@@ -46,10 +46,11 @@ public class Administrator extends User {
 		{if(DataProcessing.users.containsKey(name))
 			{try {
 				DataProcessing.updateUser(name, password, role);
-			} catch (SQLException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				System.out.println(e.toString());
-			}
+			} 
+			
 			System.out.println("修改成功");
 			return true;
 			}
@@ -70,7 +71,7 @@ public class Administrator extends User {
 		if(DataProcessing.users.containsKey(name)) {
 			try {
 				DataProcessing.deleteUser(name);
-			} catch (SQLException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				System.out.println(e.toString());
 			}
@@ -104,7 +105,7 @@ public class Administrator extends User {
 		else {
 		try {
 			DataProcessing.insertUser(name, password, role);
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			System.out.println(e.toString());
 		}
@@ -134,7 +135,7 @@ public class Administrator extends User {
 					System.out.println("当前系统无任何用户数据");
 					return false;
 				}
-		} catch (SQLException e1) {
+		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			System.out.println(e1.toString());
 			return false;

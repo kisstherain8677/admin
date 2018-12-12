@@ -19,12 +19,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 
-public abstract class User {
+public  class User {
 	private String name;
 	private String password;
 	private String role;
 	
-	User(String name,String password,String role){
+	public User(String name,String password,String role){
 		this.name=name;
 		this.password=password;
 		this.role=role;				
@@ -59,7 +59,7 @@ public abstract class User {
 						try {
 							DataProcessing.updateUser(user.getName(), newCode.getText(), user.getRole());
 							selfframe.dispose();
-						} catch (SQLException e) {
+						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
@@ -106,7 +106,7 @@ public abstract class User {
 		return true;
 	}
 	
-	public void showFileList() throws SQLException{
+	public void showFileList() throws SQLException, ClassNotFoundException{
 		double ranValue=Math.random();
 		if (ranValue>0.9)
 			throw new SQLException( "Error in accessing file DB" );
@@ -120,7 +120,9 @@ public abstract class User {
 		
 	}
 	
-	public abstract void showMenu() ;
+	public void showMenu() {
+		System.out.println("未实例化");
+	}
 	
 	public void exitSystem(){
 		System.out.println("系统退出, 谢谢使用 ! ");
