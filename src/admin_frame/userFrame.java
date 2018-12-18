@@ -8,6 +8,7 @@ import java.util.Enumeration;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 
 import admin.DataProcessing;
@@ -21,6 +22,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JScrollPane;
 
 public class userFrame extends JFrame {
 
@@ -29,12 +31,10 @@ public class userFrame extends JFrame {
 	private JTextField changeCodeText;
 	private JTextField addCode;
 	private JTextField addUser;
-	private JTextField delCode;
-	private JTextField delUser;
 	private JPanel panel_add;
 	private JPanel panel_change;
 	private JPanel panel_del;
-	
+	private JTable userTable;
 
 	/**
 	 * Launch the application.
@@ -44,7 +44,6 @@ public class userFrame extends JFrame {
 			public void run() {
 				try {
 					userFrame frame = new userFrame();
-					frame.hidePanel_add();
 					frame.setVisible(true);
 					
 				} catch (Exception e) {
@@ -56,10 +55,9 @@ public class userFrame extends JFrame {
 
 	/**
 	 * Create the frame.
-	 * @throws SQLException 
-	 * @throws ClassNotFoundException 
+	 * @throws Exception 
 	 */
-	public userFrame() throws SQLException, ClassNotFoundException {
+	public userFrame() throws Exception {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -106,6 +104,8 @@ public class userFrame extends JFrame {
 				String role = (String)addType.getSelectedItem();
 				try {
 					DataProcessing.insertUser(name, code, role);
+					UserModel model = new UserModel();
+					userTable.setModel(model);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -182,6 +182,8 @@ public class userFrame extends JFrame {
 				String type = (String)changeTypeCombo.getSelectedItem(); 
 				try {
 					DataProcessing.updateUser(name, code,type);
+					UserModel model = new UserModel();
+					userTable.setModel(model);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -210,43 +212,7 @@ public class userFrame extends JFrame {
 		tabbedPane.add("删除用户", panel_del);
 		panel_del.setLayout(null);
 		
-		JLabel label_3 = new JLabel("\u7528\u6237\u540D");
-		label_3.setBounds(60, 46, 72, 18);
-		panel_del.add(label_3);
 		
-		JLabel label_4 = new JLabel("\u5BC6\u7801");
-		label_4.setBounds(60, 95, 72, 18);
-		panel_del.add(label_4);
-		
-		delCode = new JTextField();
-		delCode.setColumns(10);
-		delCode.setBounds(235, 92, 133, 24);
-		panel_del.add(delCode);
-		
-		JButton delConButton = new JButton("确认删除");
-		delConButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
-		delConButton.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent arg0) {
-				String name = delUser.getText();
-				String code = delCode.getText();
-				
-				try {
-					if(code.equals(DataProcessing.searchUser(name).getPassword()))
-					{DataProcessing.deleteUser(name);
-					System.out.println("删除成功");}
-					else System.out.println("密码不正确");
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		});
-		delConButton.setBounds(76, 193, 101, 18);
-		panel_del.add(delConButton);
 		
 		JButton delCanButton = new JButton("取消");
 		delCanButton.addMouseListener(new MouseAdapter() {
@@ -258,22 +224,45 @@ public class userFrame extends JFrame {
 		
 		delCanButton.setBounds(235, 193, 101, 18);
 		panel_del.add(delCanButton);
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(0, 0, 417, 180);
+		panel_del.add(scrollPane);
+		UserModel userModel = new UserModel();
+		userTable = new JTable(userModel.getValues(),userModel.getColumns());
+		scrollPane.setViewportView(userTable);
+		//panel_del.add(userTable);
+		userTable.setRowSelectionAllowed(true);
 		
-		delUser = new JTextField();
-		delUser.setBounds(235, 43, 133, 24);
-		panel_del.add(delUser);
-		delUser.setColumns(10);
+		
+		JButton delConButton = new JButton("确认删除");
+		delConButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				try {
+					int selectionRow = userTable.getSelectedRow();
+					String chooseUser=(String) userTable.getModel().getValueAt(selectionRow, 0);
+					DataProcessing.deleteUser(chooseUser);
+					UserModel model = new UserModel();
+					userTable.setModel(model);
+//					userTable.validate();
+//					userTable.updateUI();
+					
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				
+				}
+				
+				
+			}
+		});
+		delConButton.setBounds(76, 193, 101, 18);
+		panel_del.add(delConButton);
 	}
 	
-	public void hidePanel_add() {
-		this.panel_add.setVisible(false);
-	}
-
-	public void hidePanel_change() {
-		this.panel_change.setVisible(false);
-	}
-
-	public void hidePanel_del() {
-		this.panel_del.setVisible(false);
+	
+	
+	public JTabbedPane getTabbedPane() {
+		return this.tabbedPane;
 	}
 }

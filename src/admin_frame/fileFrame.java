@@ -24,11 +24,13 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.print.Doc;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -66,10 +68,9 @@ public class fileFrame extends JFrame {
 
 	/**
 	 * Create the frame.
-	 * @throws SQLException 
-	 * @throws ClassNotFoundException 
+	 * @throws Exception 
 	 */
-	public fileFrame() throws SQLException, ClassNotFoundException  {
+	public fileFrame() throws Exception  {
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -90,11 +91,11 @@ public class fileFrame extends JFrame {
 		scrollPane.setBounds(0, 0, 417, 180);
 		downloadPanel.add(scrollPane);
 		
-		String[] columnNames = {"ID","filename","creator","timestamp","description"};
-		String[][] tableValues = getTableValues(columnNames);
-		
-		JTable table = new JTable(tableValues,columnNames);
+		FileModel fm = new FileModel();
+		JTable table = new JTable();
+		table.setModel(fm);
 		scrollPane.setViewportView(table);
+		//添加取消键
 		button_cancel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -103,16 +104,7 @@ public class fileFrame extends JFrame {
 		});
 		button_cancel.setBounds(208, 184, 209, 27);
 		downloadPanel.add(button_cancel);
-	
-		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-
-			@Override
-			public void valueChanged(ListSelectionEvent arg0) {
-				// TODO Auto-generated method stub
-				 int  selectedRow = table.getSelectedRow();
-			}
-			
-		});
+	//
 		
 		button_download.addMouseListener(new MouseAdapter() {
 			@Override
@@ -120,9 +112,12 @@ public class fileFrame extends JFrame {
 				chooser = new JFileChooser();
 				chooser.setFileSelectionMode(1);
 				chooser.showOpenDialog(fileFrame.this);
+				int choose = table.getSelectedRow();
+				String selectedId= (String) table.getModel().getValueAt(choose, 0);//model内的二维数组与表格内对应
+				
 				String path = chooser.getSelectedFile().getAbsolutePath();
 				try {
-					LoginFrame.getUser().downloadFile(String.valueOf(selectedRow), path);
+					LoginFrame.getUser().downloadFile(selectedId, path);//传入选中id和文件绝对路径
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -169,18 +164,14 @@ public class fileFrame extends JFrame {
 			public void mousePressed(MouseEvent arg0) {
 				chooser = new JFileChooser();
 				chooser.showOpenDialog(fileFrame.this);
-				text_docName.setText(chooser.getSelectedFile().getName());
+				text_docName.setText(chooser.getSelectedFile().getAbsolutePath());
 			}
 		});
 		
 		button_open.setBounds(304, 161, 82, 23);
 		uploadPanel.add(button_open);
 		
-		JButton button_upload = new JButton("\u4E0A\u4F20\u6587\u4EF6");
-		button_upload.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
+		JButton button_upload = new JButton("上传文件");
 		button_upload.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
@@ -190,8 +181,11 @@ public class fileFrame extends JFrame {
 				Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 				String docname = text_docName.getText();
 				try {
-					DataProcessing.insertDoc(num, creator, timestamp, description,docname);
-					fileFrame.this.repaint();
+					File uploadFile = new File(docname);
+					DataProcessing.insertDoc(num, creator, timestamp, description,uploadFile.getName());//将选中的文件先放入hash表
+					LoginFrame.getUser().uploadFile(num, docname);
+					FileModel fm = new FileModel();
+					table.setModel(fm);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -221,36 +215,12 @@ public class fileFrame extends JFrame {
 		uploadPanel.add(text_creator);
 		text_creator.setColumns(10);
 		
-		
-		
 	}
 	
-	String[][] getTableValues(String[] columnNames) throws SQLException, ClassNotFoundException{
-		 int count ;
-			
-			Enumeration et = DataProcessing.getAllDocs();
-			for(count=0;et.hasMoreElements();count++) 
-				et.nextElement();
-		String[][] tableValues = new String[count][columnNames.length] ;
-		
-			Enumeration e =DataProcessing.getAllDocs();
-			String[] curValue = new String[count];
-			//将每一个枚举量取出来，作为元素存入curValue
-			int i = 0;
-			while(e.hasMoreElements()) {
-				curValue[i] = e.nextElement().toString();
-				i++;
-			}
-			//在每一个元素中
-			int j, m;
-			for( j=0;j<count;j++) {
-				for( m=0;m<curValue[j].split(",").length;m++) {
-				tableValues[j][m] = curValue[j].split(",")[m];
-				}
-			}
-			
-			return tableValues;
+	public JTabbedPane getTabbedPane() {
+		return this.tabbedPane;
 	}
+	
 }
 
 

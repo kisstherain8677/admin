@@ -91,21 +91,10 @@ public class Operator extends User {
 //		
 //	}
 	
-	public void  uploadFile() {
-		
-		System.out.println("please input the filename.");
-		Scanner in = new Scanner(System.in);
-		String filename = in.nextLine();
-		System.out.println("Please input the ID");
-		String id = in.nextLine();
-		System.out.println("Please input the creator");
-		String creator = in.nextLine();
-		System.out.println("Please input the description");
-		String description = in.nextLine();
-		
-		
+	public void  uploadFile(String id,String pathFile) {
 			try {
-				File file = new File("D://client//"+filename);
+				Doc doc = DataProcessing.searchDoc(id);
+				File file = new File(pathFile);
 				FileInputStream fin = new FileInputStream(file);//自动编码转换
 				int i,j=0;
 				byte[] content = new byte[fin.available()];
@@ -116,27 +105,18 @@ public class Operator extends User {
 				System.out.println("文件内容："+new String(content));
 				fin.close();
 				
-				
-				
-				File cfile = new File("D://server//"+filename);
+				File cfile = new File("D://server//"+pathFile.substring(pathFile.lastIndexOf('.')+1));
 				FileOutputStream fout = new FileOutputStream(cfile);
 				for(int i1=0;i1<content.length;i1++) {
 					fout.write(content[i1]);
 				}
 				fout.close();
+				DataProcessing.insertDoc(id, doc.getCreator(), new Timestamp(System.currentTimeMillis()), doc.getDescription(), doc.getFilename());
 				
-			}catch (IOException e) {
+			}catch (Exception e) {
 				System.out.println(e.getMessage());
 			}
 		
-			
-			try {
-				DataProcessing.insertDoc(id, creator, new Timestamp(System.currentTimeMillis()), description, filename);
-				
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		System.out.println("upload complete.");
 		}
 		

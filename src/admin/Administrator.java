@@ -1,8 +1,12 @@
 package admin;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Enumeration;
 import java.util.Scanner;
 
@@ -112,6 +116,36 @@ public class Administrator extends User {
 		System.out.println("添加成功");
 		return true;
 		}
+	}
+	
+	//传入文档id和选中文件的绝对路径
+	public void  uploadFile(String id,String pathFile) {
+		try {
+			Doc doc = DataProcessing.searchDoc(id);
+			File file = new File(pathFile);
+			FileInputStream fin = new FileInputStream(file);//自动编码转换
+			int i,j=0;
+			byte[] content = new byte[fin.available()];
+			while((i = fin.read())!=-1) {
+				content[j] = (byte)i;
+				j++;
+			}
+			System.out.println("文件内容："+new String(content));
+			fin.close();
+			//新建目标文件 上传到目标地址 server//
+			File cfile = new File("D://server//"+file.getName());
+			FileOutputStream fout = new FileOutputStream(cfile);
+			for(int i1=0;i1<content.length;i1++) {
+				fout.write(content[i1]);
+			}
+			fout.close();
+			//DataProcessing.insertDoc(id, doc.getCreator(), new Timestamp(System.currentTimeMillis()), doc.getDescription(), doc.getFilename());
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	
+	System.out.println("upload complete.");
 	}
 	
 	

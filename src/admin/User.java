@@ -72,11 +72,14 @@ public  class User {
 		selfframe.setVisible(true);
 	}
 	
+	
+	public void  uploadFile(String id,String pathFile) {
+	System.out.println("Î´ÊµÀý»¯");
+	}
+	
+	
 	public boolean downloadFile(String id,String path) throws IOException{
-		double ranValue=Math.random();
-		if (ranValue>0.9)
-			throw new IOException( "Error in accessing file" );
-		
+
 		Scanner in = new Scanner(System.in);
 		try {
 			String filename = DataProcessing.searchDoc(id).getFilename();
@@ -153,5 +156,8 @@ public  class User {
 		this.role = role;
 	}
 	
+	public String toString() {
+		return this.name+","+this.password+","+this.role;
+	}
 
 }

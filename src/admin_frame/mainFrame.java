@@ -64,6 +64,8 @@ public class mainFrame extends JFrame {
 			public void mousePressed(MouseEvent arg0) {
 				try {
 					userFrame userframe = new userFrame();
+					userframe.getTabbedPane().setSelectedIndex(0);
+					
 					userframe.setVisible(true);
 					
 				} catch (Exception e) {
@@ -80,6 +82,7 @@ public class mainFrame extends JFrame {
 			public void mousePressed(MouseEvent arg0) {
 				try {
 					userFrame userframe = new userFrame();
+					userframe.getTabbedPane().setSelectedIndex(1);
 					userframe.setVisible(true);
 					
 				} catch (Exception e) {
@@ -96,6 +99,7 @@ public class mainFrame extends JFrame {
 			public void mousePressed(MouseEvent arg0) {
 				try {
 					userFrame userframe = new userFrame();
+					userframe.getTabbedPane().setSelectedIndex(2);
 					userframe.setVisible(true);
 					
 				} catch (Exception e) {
@@ -118,6 +122,7 @@ public class mainFrame extends JFrame {
 					public void run() {
 						try {
 							fileFrame fileframe = new fileFrame();
+							fileframe.getTabbedPane().setSelectedIndex(0);
 							fileframe.setVisible(true);
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -137,6 +142,7 @@ public class mainFrame extends JFrame {
 				try {
 					ff = new fileFrame();
 					ff.setVisible(true);
+					ff.getTabbedPane().setSelectedIndex(1);
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

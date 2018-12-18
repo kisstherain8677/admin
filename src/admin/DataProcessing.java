@@ -11,21 +11,22 @@ public  class DataProcessing {
 	static {
 		users = new Hashtable<String,User>();
 		docs = new Hashtable<String,Doc>();
+		
 	}
-	static Connection connection;//静态变量即使在trycatch中也不会回收
+	
 	
 	static String driverName="com.mysql.cj.jdbc.Driver";               // 加载数据库驱动类必须加 cj
     static String url="jdbc:mysql://localhost:3306/document?serverTimezone=UTC"; // 声明数据库的URL mysql6以上需要指定时区
     static String user="root";                                      // 数据库用户
     static String password="86771385";
-	
+    static Connection connection;
+   
     //连接数据库 将数据载入哈希表 connection未关闭每次调用init（）函数，都要关闭静态变量connection
 	public static  void init() throws ClassNotFoundException, SQLException{
+		Class.forName(driverName);
+		 connection = DriverManager.getConnection(url, user, password);
 		 Statement statement=null;
 		 ResultSet resultSet=null;
-	    
-	    	Class.forName(driverName);		
-			connection=DriverManager.getConnection(url, user, password);   // 建立数据库连接
 			//将数据读入hashtable
 			statement = connection.createStatement();
 			String sqlDoc = "select * from Doc_info";
@@ -59,6 +60,7 @@ public  class DataProcessing {
 			}
 				resultSet.close();
 				statement.close();
+				
 	   
 	    }
 	
@@ -70,6 +72,7 @@ public  class DataProcessing {
 		    String id=null,creator=null,time=null,description=null,filename=null;
 	    	init();
 			String sql="select * from Doc_info where id='"+ID+"'";
+			statement = connection.createStatement();
 			resultSet = statement.executeQuery(sql);
 			while (resultSet.next()){
 				id=resultSet.getString("Id");
@@ -79,17 +82,14 @@ public  class DataProcessing {
 				filename = resultSet.getString("filename");
 			}
 			Doc doc = new Doc(id,creator,time,description,filename);
-			
 			resultSet.close();                        
             statement.close();                        
-            connection.close();  
             return doc;
-	    
-	    
 	}
 	
 	public static Enumeration<Doc> getAllDocs() throws SQLException, ClassNotFoundException{		
-		 Statement statement=null;
+		
+		Statement statement=null;
 		 ResultSet resultSet=null;
 		init();
 		String sql = "select * from Doc_info";
@@ -108,36 +108,38 @@ public  class DataProcessing {
 		e = docs.elements();
 		resultSet.close();                        
         statement.close();                        
-        connection.close(); 
+        
 		return e;
 	} 
 	
 	public static boolean insertDoc(String ID, String creator, Timestamp timestamp, String description, String filename) throws SQLException, ClassNotFoundException{
+		
 		PreparedStatement pre=null;		
 		init();
 		if (docs.containsKey(ID))
-			{System.out.println("ID已经存在");////insert into user_info(username,password,role) value(?,?,?)
-			connection.close();
+			{
+			System.out.println("ID已经存在");////insert into user_info(username,password,role) value(?,?,?)
 			return false;                          
 			}
 		else{
-			String sql = "insert into doc_info(Id,creator,timestamp,description,filename) values(?,?,?,?,?)";
+			String sql = "insert into doc_info(creator,timestamp,description,filename) values(?,?,?,?);";
 			pre= connection.prepareStatement(sql);
-			pre.setInt(1, Integer.parseInt(ID));
-			pre.setString(2, creator);
-			pre.setTimestamp(3, timestamp);
-			pre.setString(4, description);
-			pre.setString(5, filename);
-			pre.executeUpdate(sql);
+			//pre.setInt(1, Integer.parseInt(ID));
+			pre.setString(1, creator);
+			pre.setTimestamp(2, timestamp);
+			pre.setString(3, description);
+			pre.setString(4, filename);
+			pre.executeUpdate();
 			pre.close();
-			connection.close();
+			Doc doc = new Doc(ID, creator, timestamp.toString(), description, filename);
+			docs.put(ID, doc);
 			return true;
 		}
 	} 
 	
 	public static User searchUser(String name) throws SQLException, ClassNotFoundException{
+		
 		init();
-		connection.close();
 		if (users.containsKey(name)) {
 			return users.get(name);			
 		}
@@ -149,8 +151,9 @@ public  class DataProcessing {
 	}
 	
 	public static User searchUser(String name, String password) throws SQLException, ClassNotFoundException {
+		
 		init();
-		connection.close();
+		
 		if (users.containsKey(name)) {
 			User temp =users.get(name);
 			if ((temp.getPassword()).equals(password))
@@ -160,8 +163,11 @@ public  class DataProcessing {
 	}
 	
 	public static Enumeration<User> getAllUser() throws SQLException, ClassNotFoundException{
+		
 		init();
-		connection.close();
+		Enumeration e2 =users.elements();
+		while(e2.hasMoreElements()) {
+		System.out.println(e2.nextElement().toString());}
 		Enumeration<User> e  = users.elements();
 		return e;
 	}
@@ -169,6 +175,7 @@ public  class DataProcessing {
 	
 	
 	public static boolean updateUser(String name, String password, String role) throws SQLException, ClassNotFoundException{
+		
 		PreparedStatement pre=null;
 		init();
 		String sql = "update user_info set password=?,role=? where username=?";
@@ -178,11 +185,12 @@ public  class DataProcessing {
 		pre.setString(3, name);
 		pre.executeUpdate();
 		pre.close();
-		connection.close();
+		
 		return true;
 	}
 	
-	public static boolean insertUser(String name, String password, String role) throws SQLException, ClassNotFoundException{
+	public static boolean insertUser(String name, String password, String role) throws SQLException, ClassNotFoundException{		
+		
 		PreparedStatement pre=null;
 		init();
 		if (users.containsKey(name))
@@ -195,7 +203,8 @@ public  class DataProcessing {
 			pre.setString(3, role);
 			pre.executeUpdate();
 			pre.close();
-			connection.close();
+			User u = new User(name,password,role);
+			users.put(name, u);
 			return true;
 		}
 	}
@@ -203,13 +212,12 @@ public  class DataProcessing {
 	public static boolean deleteUser(String name) throws SQLException, ClassNotFoundException{
 		PreparedStatement pre=null;
 		init();
-		
-		
 		if (users.containsKey(name)){
 			
 			String sql = "delete from user_info where username='"+name+"'";
 			pre = connection.prepareStatement(sql);
 			pre.executeUpdate();
+			users.remove(name);
 			return true;
 		}else
 			return false;
@@ -220,7 +228,7 @@ public  class DataProcessing {
 		if ( connection!=null ){
 			// close Statement and Connection            
 			try{
- 			  connection.close();    
+ 			    
 			}catch(Exception e) {
 				e.printStackTrace();
 			}                             
