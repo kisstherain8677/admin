@@ -23,10 +23,12 @@ public class Browser extends User {
 //	}
 
 	public void showMenu() {
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					mainFrame mf = new mainFrame();
+					mainFrame mf ;
+					mf = new mainFrame();
 					mf.getJMenuBar().getMenu(0).setEnabled(false);
 					mf.getJMenuBar().getMenu(1).getItem(1).setEnabled(false);
 					mf.setVisible(true);

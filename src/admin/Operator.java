@@ -111,7 +111,7 @@ public class Operator extends User {
 					fout.write(content[i1]);
 				}
 				fout.close();
-				DataProcessing.insertDoc(id, doc.getCreator(), new Timestamp(System.currentTimeMillis()), doc.getDescription(), doc.getFilename());
+				DataProcessing.insertDoc( doc.getCreator(), new Timestamp(System.currentTimeMillis()), doc.getDescription(), doc.getFilename());
 				
 			}catch (Exception e) {
 				System.out.println(e.getMessage());

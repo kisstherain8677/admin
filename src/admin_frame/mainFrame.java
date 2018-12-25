@@ -24,7 +24,7 @@ import java.sql.SQLException;
 public class mainFrame extends JFrame {
 
 	private JPanel contentPane;
-	
+	private fileFrame fileframe;
 	
 
 	
@@ -121,7 +121,7 @@ public class mainFrame extends JFrame {
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						try {
-							fileFrame fileframe = new fileFrame();
+							 fileframe = new fileFrame();
 							fileframe.getTabbedPane().setSelectedIndex(0);
 							fileframe.setVisible(true);
 						} catch (Exception e) {
@@ -168,9 +168,9 @@ public class mainFrame extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		
-		
-		
-		
+	}
+	
+	public fileFrame getFileFrame() {
+		return this.fileframe;
 	}
 }

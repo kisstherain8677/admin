@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JTextField;
 
 import admin_frame.LoginFrame;
+import admin_frame.mainFrame;
 import admin_frame.selfFrame;
 
 import java.awt.event.MouseAdapter;
@@ -125,6 +126,7 @@ public  class User {
 	
 	public void showMenu() {
 		System.out.println("Î´ÊµÀý»¯");
+		
 	}
 	
 	public void exitSystem(){

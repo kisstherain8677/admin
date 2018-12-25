@@ -27,12 +27,13 @@ public class Administrator extends User {
 	
 	public void showMenu() {
 		try {
-			JFrame mainFrame = new mainFrame();
-			mainFrame.setVisible(true);
+			JFrame mainframe = new mainFrame();
+			mainframe.setVisible(true);
 			
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 	}
+		
 	}
 	
 

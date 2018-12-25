@@ -13,6 +13,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import admin.DataProcessing;
+import admin.DocClient;
 
 import java.awt.GridLayout;
 import java.sql.SQLException;
@@ -49,6 +50,8 @@ public class fileFrame extends JFrame {
 	private JTextField text_docName;
 	private JTextField text_creator;
 	JFileChooser chooser=new JFileChooser();
+	static private String uploadFilePath =null;
+	static private String downloadFilePath=null;
 
 	/**
 	 * Launch the application.
@@ -116,9 +119,10 @@ public class fileFrame extends JFrame {
 				String selectedId= (String) table.getModel().getValueAt(choose, 0);//model内的二维数组与表格内对应
 				
 				String path = chooser.getSelectedFile().getAbsolutePath();
+				downloadFilePath = path;
 				try {
-					LoginFrame.getUser().downloadFile(selectedId, path);//传入选中id和文件绝对路径
-				} catch (IOException e1) {
+					admin.MainGUI.application.Download(selectedId, fileFrame.this,path);//传入选中id和文件绝对路径
+				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
@@ -165,6 +169,7 @@ public class fileFrame extends JFrame {
 				chooser = new JFileChooser();
 				chooser.showOpenDialog(fileFrame.this);
 				text_docName.setText(chooser.getSelectedFile().getAbsolutePath());
+				uploadFilePath = chooser.getSelectedFile().getAbsolutePath();
 			}
 		});
 		
@@ -175,15 +180,19 @@ public class fileFrame extends JFrame {
 		button_upload.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				String num = text_docNum.getText();
-				String description = text_docDiscription.getText();
-				String creator = text_creator.getText();
+				//String num = text_docNum.getText();
+				String description=null;
+				String creator=null;
+				String docname=null;
+				
+				 description = text_docDiscription.getText();
+				 creator = text_creator.getText();
 				Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-				String docname = text_docName.getText();
+				 docname = text_docName.getText();//docname为文件的绝对路径
 				try {
 					File uploadFile = new File(docname);
-					DataProcessing.insertDoc(num, creator, timestamp, description,uploadFile.getName());//将选中的文件先放入hash表
-					LoginFrame.getUser().uploadFile(num, docname);
+					int id = DataProcessing.insertDoc( creator, timestamp, description,uploadFile.getName());//将选中的文件先放入hash表
+					admin.MainGUI.application.Upload(String.valueOf(id), creator, description, docname, fileFrame.this);
 					FileModel fm = new FileModel();
 					table.setModel(fm);
 				} catch (Exception e) {
@@ -219,6 +228,14 @@ public class fileFrame extends JFrame {
 	
 	public JTabbedPane getTabbedPane() {
 		return this.tabbedPane;
+	}
+	
+	public  static String getuploadFilePath() {
+		return uploadFilePath;
+	}
+	
+	public  static String getdownloadFilePath() {
+		return downloadFilePath;
 	}
 	
 }

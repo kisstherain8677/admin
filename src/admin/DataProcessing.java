@@ -112,16 +112,12 @@ public  class DataProcessing {
 		return e;
 	} 
 	
-	public static boolean insertDoc(String ID, String creator, Timestamp timestamp, String description, String filename) throws SQLException, ClassNotFoundException{
+	public static int insertDoc( String creator, Timestamp timestamp, String description, String filename) throws SQLException, ClassNotFoundException{
 		
 		PreparedStatement pre=null;		
 		init();
-		if (docs.containsKey(ID))
-			{
-			System.out.println("IDÒÑ¾­´æÔÚ");////insert into user_info(username,password,role) value(?,?,?)
-			return false;                          
-			}
-		else{
+		
+			String ID;
 			String sql = "insert into doc_info(creator,timestamp,description,filename) values(?,?,?,?);";
 			pre= connection.prepareStatement(sql);
 			//pre.setInt(1, Integer.parseInt(ID));
@@ -131,10 +127,17 @@ public  class DataProcessing {
 			pre.setString(4, filename);
 			pre.executeUpdate();
 			pre.close();
+			
+			String sql1 = "select * from Doc_info where filename="+"'"+filename+"'";
+			Statement statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(sql1);
+			while(resultSet.next()) {
+				ID = resultSet.getString("Id");
 			Doc doc = new Doc(ID, creator, timestamp.toString(), description, filename);
 			docs.put(ID, doc);
-			return true;
-		}
+			return Integer.parseInt(ID);
+			}
+			return -1;
 	} 
 	
 	public static User searchUser(String name) throws SQLException, ClassNotFoundException{
