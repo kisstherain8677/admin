@@ -23,6 +23,7 @@ public class DocServer
 	   private ServerSocket server; 
 	   private Socket connection;
    private int counter = 1; 
+   static User user;
 
    public static void main( String args[] )
    {
@@ -147,6 +148,37 @@ public class DocServer
 		  			    output.flush();
 		  		    }
 		  		}
+		    	  
+		    	  
+		    	  else if(message.equals("CLIENT>>> LOGIN")) {
+		    		  String name = input.readUTF();
+		    		  String password = input.readUTF();
+		    		  displayMessage("The server is searching user's information...");
+		    		  user = DataProcessing.searchUser(name, password);
+		    		  displayMessage("found the information.");
+		    		  if(user!=null) {
+		    			 output.writeUTF("LOGIN_TRUE");
+		    			 output.flush();//打开界面的行为交给客户端 服务端只用来传输数据
+			    		 
+		    			 output.writeUTF(user.getRole());
+			    		 output.flush();
+			    		 
+		    			 ObjectOutputStream objectoutput = new ObjectOutputStream(connection.getOutputStream());
+		    			 objectoutput.flush();
+		    			 objectoutput.writeObject(user);
+		    			 objectoutput.flush();
+		    			 
+		    			
+		    			 
+		    		  }
+		    		  else {
+		    			  displayMessage("failed to login.Can't find the user.");
+		    			  output.writeUTF("LOGIN_FALSE");
+		    			  output.flush();
+		    		  }
+		    		  
+		    	  }
+		    	  
 		    	  else displayMessage(message); 
 		      } while ( !message.equals( "CLIENT>>> CLIENT_LOGOUT" ) );		 
 	   }  
@@ -192,4 +224,10 @@ public class DocServer
 		      ); 
    } 
   
+   public static User getUser() {
+	   return user;
+   }
+   
+   
+   
 }

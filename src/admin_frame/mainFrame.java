@@ -8,6 +8,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import admin.DocClient;
+import admin.DocServer;
 import admin.User;
 
 import java.awt.FlowLayout;
@@ -19,15 +21,13 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.sql.SQLException;
 
 public class mainFrame extends JFrame {
 
 	private JPanel contentPane;
 	private fileFrame fileframe;
-	
-
-	
 
 	/**
 	 * Launch the application.
@@ -159,7 +159,7 @@ public class mainFrame extends JFrame {
 		selfMenu.add(item_changeSelf);
 		item_changeSelf.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent arg0) {
-				LoginFrame.user.changeSelfInfo();
+				DocClient.getUser().changeSelfInfo();
 			}
 		});
 		
@@ -168,9 +168,31 @@ public class mainFrame extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
+		String role = DocClient.getRole();
+		if(role.equalsIgnoreCase("administrator")) {		 
+			this.setVisible(true);
+		}else if(role.equalsIgnoreCase("operator")) {
+			 
+			getJMenuBar().getMenu(0).setEnabled(false);
+			setVisible(true);
+		}else if(role.equalsIgnoreCase("browser")) {
+			
+			getJMenuBar().getMenu(0).setEnabled(false);
+			MouseListener[] ml = getJMenuBar().getMenu(1).getItem(1).getMouseListeners();
+			getJMenuBar().getMenu(1).getItem(1).removeMouseListener(ml[1]);
+			getJMenuBar().getMenu(1).getItem(1).setEnabled(false);
+			setVisible(true);
+		}
+		
 	}
 	
 	public fileFrame getFileFrame() {
 		return this.fileframe;
 	}
+	
+	
+	
+	
+	
+	
 }

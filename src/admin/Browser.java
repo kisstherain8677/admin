@@ -1,6 +1,8 @@
 package admin;
 
 import java.awt.EventQueue;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -23,20 +25,17 @@ public class Browser extends User {
 //	}
 
 	public void showMenu() {
-		
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
 				try {
 					mainFrame mf ;
 					mf = new mainFrame();
 					mf.getJMenuBar().getMenu(0).setEnabled(false);
+					MouseListener[] ml = mf.getJMenuBar().getMenu(1).getItem(1).getMouseListeners();
+					mf.getJMenuBar().getMenu(1).getItem(1).removeMouseListener(ml[1]);
 					mf.getJMenuBar().getMenu(1).getItem(1).setEnabled(false);
 					mf.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
-				}
-			}
-		});
+				
 	}
 	
 //	@Override
@@ -90,4 +89,5 @@ public class Browser extends User {
 //		
 //	}
 
+}
 }

@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import admin.DataProcessing;
+import admin.DocClient;
 import admin.User;
 
 import javax.swing.JLabel;
@@ -22,8 +23,7 @@ import java.awt.event.MouseEvent;
 
 public class LoginFrame extends JFrame {
 
-	static User user; 
-	private static JFrame loginFrame;
+	private static JFrame loginFrame;//只是用来启动调试界面，传递这点变量出去是无效的。要用LoginFrame.this
 	private static JPanel loginPane;
 	private JTextField textField;
 	private JPasswordField passwordField;
@@ -93,18 +93,8 @@ public class LoginFrame extends JFrame {
 			public void mouseClicked(MouseEvent arg0) {
 				String name = textField.getText();
 				char[] password = passwordField.getPassword();
-				
 				try {
-					 user = DataProcessing.searchUser(name, String.valueOf(password));
-					if(user!=null) {
-						user.showMenu();
-						dispose();
-//					    mainFrame mainframe = new mainFrame();
-//						mainframe.setVisible(true);
-					}
-					else {
-						System.out.println("用户不存在或密码错误");
-					}
+					DocClient.Login(name, String.valueOf(password), LoginFrame.this);
 				}catch(Exception e) {
 					e.printStackTrace();
 				}
@@ -118,7 +108,7 @@ public class LoginFrame extends JFrame {
 		loginPane.add(button_cancel);
 		button_cancel.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent arg0) {
-				loginFrame.dispose();
+				LoginFrame.this.dispose();
 				System.exit(0);
 			}
 		});
@@ -126,11 +116,8 @@ public class LoginFrame extends JFrame {
 	
 	
 	public JFrame getloginFrame() {
-		return this.loginFrame;
+		return LoginFrame.this;
 	}
 	
-	public static User getUser() {
-		return user;
-	}
 	
 }

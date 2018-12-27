@@ -121,7 +121,7 @@ public class fileFrame extends JFrame {
 				String path = chooser.getSelectedFile().getAbsolutePath();
 				downloadFilePath = path;
 				try {
-					admin.MainGUI.application.Download(selectedId, fileFrame.this,path);//传入选中id和文件绝对路径
+					DocClient.Download(selectedId, fileFrame.this,path);//传入选中id和文件绝对路径
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -192,7 +192,7 @@ public class fileFrame extends JFrame {
 				try {
 					File uploadFile = new File(docname);
 					int id = DataProcessing.insertDoc( creator, timestamp, description,uploadFile.getName());//将选中的文件先放入hash表
-					admin.MainGUI.application.Upload(String.valueOf(id), creator, description, docname, fileFrame.this);
+					DocClient.Upload(String.valueOf(id), creator, description, docname, fileFrame.this);
 					FileModel fm = new FileModel();
 					table.setModel(fm);
 				} catch (Exception e) {

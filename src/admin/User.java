@@ -18,9 +18,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 
 
-public  class User {
+public  class User  implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String name;
 	private String password;
 	private String role;
@@ -45,7 +50,7 @@ public  class User {
 		userRole.setEditable(false);
 		userNameText.setText(this.getName());
 		userRole.setText(this.getRole());
-		User user = LoginFrame.getUser();
+		User user = DocServer.getUser();
 		
 		canclButton.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent arg0) {

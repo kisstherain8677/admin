@@ -19,7 +19,10 @@ import java.util.Vector;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-public class DocClient 
+
+import admin_frame.LoginFrame;
+import admin_frame.mainFrame;
+public class DocClient  extends JFrame
 {
     // input stream from server
    private String message = ""; // message from server
@@ -28,12 +31,14 @@ public class DocClient
    private String chatServer; // host server for this application
    private static Socket client; // socket to communicate with server
    //private FileInputStream fis;
-   private static JFrame Jframe;
-
+   private static JFrame Jframe;//传入要用到的界面，用于退出时关闭
+   private static String role;
+   private static  User user;
    
 
    DocClient(String host){
-	  
+	   
+	  setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	   chatServer = host;
    }
    
@@ -54,6 +59,9 @@ public class DocClient
       {
          ioException.printStackTrace();
       } 
+      catch(ClassNotFoundException classException) {
+    	  classException.printStackTrace();
+      }
       finally 
       {
          closeConnection(); 
@@ -83,7 +91,7 @@ public class DocClient
 	
 
    
-   private void processConnection() throws IOException
+   private void processConnection() throws IOException, ClassNotFoundException
    {
 	   do { 
 	         message = input.readUTF(); 
@@ -106,9 +114,48 @@ public class DocClient
 	 				 if(transLen>=fileLength) break;
 	 			 }
 	 			 System.out.println("----下载文件<"+filename+">成功----");
-	 			JOptionPane.showMessageDialog(null, "下载成功", "message", JOptionPane.PLAIN_MESSAGE);
+	 			JOptionPane.showMessageDialog(null, "下载成功", "提示", JOptionPane.PLAIN_MESSAGE);
 	 			Jframe.dispose();
 	         }
+	         
+	         
+	         else if(message.equals("UPLOAD_TRUE")) {
+	        	 JOptionPane.showMessageDialog(null, "上传成功","提示" , JOptionPane.PLAIN_MESSAGE);
+	        	 Jframe.dispose();
+	        	 System.out.println("上传成功");
+	         }
+	         
+	         else if(message.equals("UPLOAD_FALSE")) {
+	        	 JOptionPane.showMessageDialog(null, "上传失败","提示" , JOptionPane.PLAIN_MESSAGE);
+	        	 Jframe.dispose();
+	        	 System.out.println("上传失败");
+	         }
+	         
+	         else if(message.equals("LOGIN_TRUE")) {
+	        	 
+	        	 role = input.readUTF();
+	        	 ObjectInputStream objectinput = new ObjectInputStream(client.getInputStream());
+	        	 
+	        		 if(role.equalsIgnoreCase("administrator"))
+	        			 user = (Administrator) objectinput.readObject();
+	        		 else if(role.equalsIgnoreCase("browser"))
+	        			 user = (Browser)objectinput.readObject();
+	        		 else if(role.equalsIgnoreCase("operator"))
+	        			 user = (Operator)objectinput.readObject();
+				 
+	        	 System.out.println(user.getName()+user.getPassword());	        		        		        
+	        	 mainFrame mf = new mainFrame();
+	        	 mf.setVisible(true);
+	        	 Jframe.setVisible(false);
+	        	 System.out.println("登陆成功");
+	         }
+	         
+	         else if(message.equals("LOGIN_FALSE")) {
+	        	 JOptionPane.showMessageDialog(null, "登陆失败","提示" , JOptionPane.PLAIN_MESSAGE);
+	        	 Jframe.dispose();
+	        	 System.out.println("登陆失败");
+	         }
+	         
 	      } while ( !message.equals( "SERVER>>> TERMINATE" ) );	
 
        
@@ -196,5 +243,25 @@ public class DocClient
 	       System.out.println("CLIENT>>> CLIENT_FILE_UP");
    }
 
+   public static void Login(String name,String password,JFrame frame) throws IOException {
+	   String login = "CLIENT>>> LOGIN";
+	   output.writeUTF(login);
+	   output.flush();
+	   System.out.println(login);
+	   output.writeUTF(name);
+	   output.flush();
+	   output.writeUTF(password);
+	   output.flush();
+	   Jframe = frame;
+	   
+   }
+   
+   public static String getRole() {
+	   return DocClient.role;
+   }
+   
+   public static User getUser() {
+	   return user;
+   }
    
 }
