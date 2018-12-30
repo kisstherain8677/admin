@@ -155,6 +155,51 @@ public class DocClient  extends JFrame
 	        	 Jframe.dispose();
 	        	 System.out.println("登陆失败");
 	         }
+	         else if(message.equals("ADD_TRUE")) {
+	        	 JOptionPane.showMessageDialog(null, "添加成功","提示" , JOptionPane.PLAIN_MESSAGE);
+	        	 Jframe.dispose();
+	        	 System.out.println("添加成功");
+	         }
+	         else if(message.equals("ADD_FALSE")) {
+	        	 JOptionPane.showMessageDialog(null, "添加失败","提示" , JOptionPane.PLAIN_MESSAGE);
+	        	 Jframe.dispose();
+	        	 System.out.println("添加失败");
+	         }
+	         
+	         else if(message.equals("UPDATE_TRUE")) {
+	        	 JOptionPane.showMessageDialog(null, "修改成功","提示" , JOptionPane.PLAIN_MESSAGE);
+	        	 Jframe.dispose();
+	        	 System.out.println("修改成功");
+	         }
+	         else if(message.equals("UPDATE_FALSE")) {
+	        	 JOptionPane.showMessageDialog(null, "添加失败","提示" , JOptionPane.PLAIN_MESSAGE);
+	        	 Jframe.dispose();
+	        	 System.out.println("添加失败");
+	         }
+	         
+	         else if(message.equals("DELETE_TRUE")) {
+	        	 JOptionPane.showMessageDialog(null, "删除成功","提示" , JOptionPane.PLAIN_MESSAGE);
+	        	 Jframe.dispose();
+	        	 System.out.println("删除成功");
+	         }
+	         
+	         else if(message.equals("DELETE_FALSE")) {
+	        	 JOptionPane.showMessageDialog(null, "删除失败","提示" , JOptionPane.PLAIN_MESSAGE);
+	        	 Jframe.dispose();
+	        	 System.out.println("删除失败");
+	         }
+	         
+	         else if(message.equals("CHANGE_SELF_TRUE")) {
+	        	 JOptionPane.showMessageDialog(null, "修改成功","提示" , JOptionPane.PLAIN_MESSAGE);
+	        	 Jframe.dispose();
+	        	 System.out.println("修改自身信息成功");
+	         }
+	         
+	         else if(message.equals("CHANGE_SELF_FALSE")) {
+	        	 JOptionPane.showMessageDialog(null, "修改失败","提示" , JOptionPane.PLAIN_MESSAGE);
+	        	 Jframe.dispose();
+	        	 System.out.println("修改自身信息失败");
+	         }
 	         
 	      } while ( !message.equals( "SERVER>>> TERMINATE" ) );	
 
@@ -254,6 +299,52 @@ public class DocClient  extends JFrame
 	   output.flush();
 	   Jframe = frame;
 	   
+   }
+   
+   public static void addUser(String name,String password,String role,JFrame frame) throws IOException {
+	   Jframe = frame;
+	   output.writeUTF("USER_ADD");
+	   output.flush();
+	   output.writeUTF(name);
+	   output.flush();
+	   output.writeUTF(password);
+	   output.flush();
+	   output.writeUTF(role);
+	   output.flush();
+	   System.out.println("CLIENT>>> "+name+"USER_ADD");
+   }
+   
+   public static void updateUser(String name,String password,String role,JFrame frame) throws IOException {
+	   Jframe = frame;
+	   output.writeUTF("USER_UPDATE");
+	   output.flush();
+	   output.writeUTF(name);
+	   output.flush();
+	   output.writeUTF(password);
+	   output.flush();
+	   output.writeUTF(role);
+	   output.flush();
+	   System.out.println("CLIENT>>> "+name+"USER_UPDATE");
+   }
+   
+   public static void delUser(String name,JFrame frame) throws IOException{
+	   Jframe = frame;
+	   output.writeUTF("USER_DELETE");
+	   output.flush();
+	   output.writeUTF("name");
+	   output.flush();
+	  System.out.println("CLIENT>>> "+name+"USER_DELETE");
+   }
+   
+   public static void changeSelf(String name,String password,JFrame frame)throws IOException{
+	   Jframe = frame;
+	   output.writeUTF("USER_CHANGE_SELF");
+	   output.flush();
+	   output.writeUTF(name);
+	   output.flush();
+	   output.writeUTF(password);
+	   output.flush();
+	   System.out.println("CLIENT>>> "+name+"USER_CHANGE_SELF");
    }
    
    public static String getRole() {

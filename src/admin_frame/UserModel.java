@@ -7,18 +7,12 @@ import javax.swing.table.AbstractTableModel;
 
 import admin.DataProcessing;
 
-public class UserModel extends AbstractTableModel {
-
-	
-	
+public class UserModel extends AbstractTableModel {	
 	UserModel()throws Exception{
 		super();
 	}
-	
 	 String[] columns = {"name","password","role"};
 	 String[][]values = getUserTableValues(columns);
-	
-
 	 String[][] getUserTableValues(String[] columnNames) throws SQLException, ClassNotFoundException{
 	    int count ;
 		Enumeration et = DataProcessing.getAllUser();

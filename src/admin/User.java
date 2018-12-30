@@ -36,47 +36,47 @@ public  class User  implements Serializable{
 		this.role=role;				
 	}
 	
-	public void  changeSelfInfo() {
-		JFrame selfframe = new selfFrame();
-		JTextField userNameText= (JTextField) selfframe.getContentPane().getComponent(5);
-		JTextField userRole = (JTextField) selfframe.getContentPane().getComponent(9);
-		JTextField oldCode = (JTextField)selfframe.getContentPane().getComponent(6);
-		JTextField newCode = (JTextField)selfframe.getContentPane().getComponent(7);
-		JTextField cirnewCode = (JTextField)selfframe.getContentPane().getComponent(8);
-		JButton okButton = (JButton)selfframe.getContentPane().getComponent(10);
-		JButton canclButton = (JButton)selfframe.getContentPane().getComponent(11);
-		
-		userNameText.setEditable(false);
-		userRole.setEditable(false);
-		userNameText.setText(this.getName());
-		userRole.setText(this.getRole());
-		User user = DocServer.getUser();
-		
-		canclButton.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent arg0) {
-				selfframe.dispose();
-			}
-		});
-		
-		okButton.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent arg0) {
-				if(oldCode.getText().equals(user.getPassword())) {
-					if(newCode.getText().equals(cirnewCode.getText())) {
-						try {
-							DataProcessing.updateUser(user.getName(), newCode.getText(), user.getRole());
-							selfframe.dispose();
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-					else {System.out.println("两次密码输入不一致");}
-				}else {System.out.println("原密码输入有误");}
-			}
-		});
-		
-		selfframe.setVisible(true);
-	}
+//	public void  changeSelfInfo() {
+//		JFrame selfframe = new selfFrame();
+//		JTextField userNameText= (JTextField) selfframe.getContentPane().getComponent(5);
+//		JTextField userRole = (JTextField) selfframe.getContentPane().getComponent(9);
+//		JTextField oldCode = (JTextField)selfframe.getContentPane().getComponent(6);
+//		JTextField newCode = (JTextField)selfframe.getContentPane().getComponent(7);
+//		JTextField cirnewCode = (JTextField)selfframe.getContentPane().getComponent(8);
+//		JButton okButton = (JButton)selfframe.getContentPane().getComponent(10);
+//		JButton canclButton = (JButton)selfframe.getContentPane().getComponent(11);
+//		
+//		userNameText.setEditable(false);
+//		userRole.setEditable(false);
+//		userNameText.setText(this.getName());
+//		userRole.setText(this.getRole());
+//		User user = DocServer.getUser();
+//		
+//		canclButton.addMouseListener(new MouseAdapter() {
+//			public void mousePressed(MouseEvent arg0) {
+//				selfframe.dispose();
+//			}
+//		});
+//		
+//		okButton.addMouseListener(new MouseAdapter() {
+//			public void mousePressed(MouseEvent arg0) {
+//				if(oldCode.getText().equals(user.getPassword())) {
+//					if(newCode.getText().equals(cirnewCode.getText())) {
+//						try {
+//							DataProcessing.updateUser(user.getName(), newCode.getText(), user.getRole());
+//							selfframe.dispose();
+//						} catch (Exception e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//					}
+//					else {System.out.println("两次密码输入不一致");}
+//				}else {System.out.println("原密码输入有误");}
+//			}
+//		});
+//		
+//		selfframe.setVisible(true);
+//	}
 	
 	
 	public void  uploadFile(String id,String pathFile) {

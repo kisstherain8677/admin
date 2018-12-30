@@ -6,7 +6,13 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import admin.DocClient;
+import admin.DocServer;
+
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.GridBagLayout;
@@ -17,6 +23,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
 
 public class selfFrame extends JFrame {
@@ -100,20 +107,46 @@ public class selfFrame extends JFrame {
 		contentPane.add(userType);
 		userType.setColumns(10);
 		
+		userType.setText(DocClient.getUser().getRole());
+		userType.setEditable(false);
+		userNameText.setText(DocClient.getUser().getName());
+		userNameText.setEditable(false);
+		
+	
+		
 		JButton changeButton = new JButton("\u4FEE\u6539");
 		changeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				String name = userNameText.getText();
+				String password = newCodeText.getText();
+				String con = conNewCodeText.getText();
+				try {
+					if(con.equals(password))
+					DocClient.changeSelf(name,password, selfFrame.this);
+					else
+					JOptionPane.showMessageDialog(null, "两次输入不一致！","提示" , JOptionPane.PLAIN_MESSAGE);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 		changeButton.setBounds(84, 222, 86, 18);
 		contentPane.add(changeButton);
 		
 		JButton backButton = new JButton("\u8FD4\u56DE");
+		backButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				selfFrame.this.dispose();
+				
+			}
+			
+		});
 		backButton.setBounds(240, 222, 86, 18);
 		contentPane.add(backButton);
-		
-		
-		
+			
 		
 		
 	}

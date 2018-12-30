@@ -167,9 +167,6 @@ public class DocServer
 		    			 objectoutput.flush();
 		    			 objectoutput.writeObject(user);
 		    			 objectoutput.flush();
-		    			 
-		    			
-		    			 
 		    		  }
 		    		  else {
 		    			  displayMessage("failed to login.Can't find the user.");
@@ -177,6 +174,63 @@ public class DocServer
 		    			  output.flush();
 		    		  }
 		    		  
+		    	  }
+		    	  
+		    	  else if(message.equals("USER_ADD")) {
+		    		  String name = input.readUTF();
+		    		  String password = input.readUTF();
+		    		  String role = input.readUTF();
+		    		  if(DataProcessing.insertUser(name, password, role)) {
+		    			  output.writeUTF("ADD_TRUE");
+		    			  output.flush();
+		    			  System.out.println("SERVER>>> "+name+"USER_ADD");
+		    		  }else {
+		    			  output.writeUTF("ADD_FALSE");
+		    			  output.flush();
+		    		  }
+		    	  }
+		    	  
+		    	  else if(message.equals("USER_UPDATE")) {
+		    		  String name = input.readUTF();
+		    		  String password = input.readUTF();
+		    		  String role = input.readUTF();
+		    		  if(DataProcessing.searchUser(name)!=null) {
+		    			  DataProcessing.updateUser(name, password, role);
+		    			  output.writeUTF("UPDATE_TRUE");
+		    			  output.flush();
+		    			  System.out.println("SERVER>>> "+name+"USER_UPDATE");
+		    		  }else {
+		    			  output.writeUTF("UPDATE_FALSE");
+		    			  output.flush();
+		    		  }
+		    	  }
+		    	  
+		    	  else if(message.equals("USER_DELETE")) {
+		    		  String name = input.readUTF();
+		    		  if(DataProcessing.searchUser(name)!=null) {
+		    			  DataProcessing.deleteUser(name);
+		    			  output.writeUTF("DELETE_TRUE");
+		    			  output.flush();
+		    			  System.out.println("SERVER>>> "+name+"USER_DELETE");
+		    		  }else {
+		    			  output.writeUTF("DELETE_FALSE");
+		    			  output.flush();
+		    		  }
+		    	  }
+		    	  
+		    	  else if(message.equals("USER_CHANGE_SELF")) {
+		    		  String name = input.readUTF();
+		    		  String password = input.readUTF();
+		    		  if(DataProcessing.searchUser(name)!=null) {
+		    			  User user = DataProcessing.searchUser(name);
+		    			  DataProcessing.updateUser(name, password, user.getRole());
+		    			  output.writeUTF("CHANGE_SELF_TRUE");
+		    			  output.flush();
+		    			  System.out.println("SERVER>>> "+name+"USER_CHANGE_SELF");
+		    		  }else {
+		    			  output.writeUTF("CHANGE_SELF_FALSE");
+		    			  output.flush();
+		    		  }
 		    	  }
 		    	  
 		    	  else displayMessage(message); 

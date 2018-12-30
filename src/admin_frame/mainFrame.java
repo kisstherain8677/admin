@@ -159,7 +159,8 @@ public class mainFrame extends JFrame {
 		selfMenu.add(item_changeSelf);
 		item_changeSelf.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent arg0) {
-				DocClient.getUser().changeSelfInfo();
+				selfFrame sf = new selfFrame();
+				sf.setVisible(true);
 			}
 		});
 		

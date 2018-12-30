@@ -12,6 +12,7 @@ import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 
 import admin.DataProcessing;
+import admin.DocClient;
 import admin.User;
 
 import javax.swing.JLabel;
@@ -103,7 +104,8 @@ public class userFrame extends JFrame {
 				String code = addCode.getText();
 				String role = (String)addType.getSelectedItem();
 				try {
-					DataProcessing.insertUser(name, code, role);
+					//DataProcessing.insertUser(name, code, role);
+					DocClient.addUser(name, code, role, userFrame.this);
 					UserModel model = new UserModel();
 					userTable.setModel(model);
 				} catch (Exception e) {
