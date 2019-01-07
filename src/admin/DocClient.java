@@ -1,6 +1,8 @@
 package admin;
 
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
@@ -105,7 +107,7 @@ public class DocClient  extends JFrame
 	 			 System.out.println("----开始下载文件<"+filename+">,文件大小为<"+fileLength+">----");
 	 			 while(true) {
 	 				 int read=0;
-	 				 read=input.read(sendBytes);
+	 				 read=input.read(sendBytes);//读取1024个字节到sendBytes事故组中，返回真正读取到的字节数
 	 				 if(read==-1) break;
 	 				 transLen+=read;
 	 				 System.out.println("下载文件进度"+100*transLen*1.0/fileLength+"%...");
@@ -132,7 +134,6 @@ public class DocClient  extends JFrame
 	         }
 	         
 	         else if(message.equals("LOGIN_TRUE")) {
-	        	 
 	        	 role = input.readUTF();
 	        	 ObjectInputStream objectinput = new ObjectInputStream(client.getInputStream());
 	        	 
@@ -145,15 +146,25 @@ public class DocClient  extends JFrame
 				 
 	        	 System.out.println(user.getName()+user.getPassword());	        		        		        
 	        	 mainFrame mf = new mainFrame();
+	        	 mf.addWindowListener(new WindowAdapter() {//关闭主界面时，断开此客户端与服务器的链接
+	        		 public void windowClosing(WindowEvent e) {
+	        			try {
+							closeConnection();
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+	        			 System.exit(0);
+	        		 }
+	        	 });
 	        	 mf.setVisible(true);
 	        	 Jframe.setVisible(false);
 	        	 System.out.println("登陆成功");
 	         }
 	         
 	         else if(message.equals("LOGIN_FALSE")) {
-	        	 JOptionPane.showMessageDialog(null, "登陆失败","提示" , JOptionPane.PLAIN_MESSAGE);
-	        	 Jframe.dispose();
-	        	 System.out.println("登陆失败");
+	        	 JOptionPane.showMessageDialog(null, "登陆失败","提示" , JOptionPane.ERROR_MESSAGE);
+	        	 
 	         }
 	         else if(message.equals("ADD_TRUE")) {
 	        	 JOptionPane.showMessageDialog(null, "添加成功","提示" , JOptionPane.PLAIN_MESSAGE);
@@ -201,14 +212,14 @@ public class DocClient  extends JFrame
 	        	 System.out.println("修改自身信息失败");
 	         }
 	         
-	      } while ( !message.equals( "SERVER>>> TERMINATE" ) );	
+	      } while ( !message.equals( "SERVER>>> Terminate" ) );	
 
        
    } // end method processConnection
 
    // close streams and socket
    static void closeConnection() throws IOException{
-	      displayMessage( "Closing connection" );
+	     System.out.println( "Closing connection" );
 	      String logout="CLIENET>>> CLIENT_LOGOUT";
 	      output.writeUTF(logout);
 	      output.flush();
@@ -250,7 +261,7 @@ public class DocClient  extends JFrame
 	      ); 
 	   }  
    
-   public static void Download(String ID,JFrame frame,String objectPath) throws IOException {
+   synchronized public static void Download(String ID,JFrame frame,String objectPath) throws IOException {
 	   Jframe=frame;
 	   output.writeUTF("DOWNLOAD");
 	   output.flush();
@@ -260,7 +271,7 @@ public class DocClient  extends JFrame
        output.flush();
    }
    
-   public static void Upload(String ID,String Creator,String description,String filename,JFrame frame) throws IOException{
+   synchronized public static void Upload(String ID,String Creator,String description,String filename,JFrame frame) throws IOException{
 	   Jframe=frame;
 		   output.writeUTF("UPLOAD");
 	       output.flush();
@@ -278,17 +289,17 @@ public class DocClient  extends JFrame
 	       output.writeLong(fileLength);
 	       output.flush();
 	       FileInputStream fis=new FileInputStream(file);
-	       DataOutputStream dos=new DataOutputStream(client.getOutputStream());
+	       //DataOutputStream dos=new DataOutputStream(client.getOutputStream());
 	       byte[] sendBytes=new byte[1024];
 	       int length=0;
-	       while((length=fis.read(sendBytes,0,sendBytes.length))>0) {
+	       while((length=fis.read(sendBytes,0,sendBytes.length))>0) {//将文件流的字节读入到sendBytes数组 再将数组内容输出到output
 		       output.write(sendBytes,0,length);
 		       output.flush();
 	       }
 	       System.out.println("CLIENT>>> CLIENT_FILE_UP");
    }
 
-   public static void Login(String name,String password,JFrame frame) throws IOException {
+   synchronized public static void Login(String name,String password,JFrame frame) throws IOException {
 	   String login = "CLIENT>>> LOGIN";
 	   output.writeUTF(login);
 	   output.flush();
@@ -301,7 +312,7 @@ public class DocClient  extends JFrame
 	   
    }
    
-   public static void addUser(String name,String password,String role,JFrame frame) throws IOException {
+   synchronized public static void addUser(String name,String password,String role,JFrame frame) throws IOException {
 	   Jframe = frame;
 	   output.writeUTF("USER_ADD");
 	   output.flush();
@@ -314,7 +325,7 @@ public class DocClient  extends JFrame
 	   System.out.println("CLIENT>>> "+name+"USER_ADD");
    }
    
-   public static void updateUser(String name,String password,String role,JFrame frame) throws IOException {
+   synchronized public static void updateUser(String name,String password,String role,JFrame frame) throws IOException {
 	   Jframe = frame;
 	   output.writeUTF("USER_UPDATE");
 	   output.flush();
@@ -327,7 +338,7 @@ public class DocClient  extends JFrame
 	   System.out.println("CLIENT>>> "+name+"USER_UPDATE");
    }
    
-   public static void delUser(String name,JFrame frame) throws IOException{
+   synchronized public static void delUser(String name,JFrame frame) throws IOException{
 	   Jframe = frame;
 	   output.writeUTF("USER_DELETE");
 	   output.flush();
@@ -336,7 +347,7 @@ public class DocClient  extends JFrame
 	  System.out.println("CLIENT>>> "+name+"USER_DELETE");
    }
    
-   public static void changeSelf(String name,String password,JFrame frame)throws IOException{
+   synchronized public static void changeSelf(String name,String password,JFrame frame)throws IOException{
 	   Jframe = frame;
 	   output.writeUTF("USER_CHANGE_SELF");
 	   output.flush();

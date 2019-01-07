@@ -93,6 +93,10 @@ public class LoginFrame extends JFrame {
 			public void mouseClicked(MouseEvent arg0) {
 				String name = textField.getText();
 				char[] password = passwordField.getPassword();
+				if(password==null) {
+					String e = "error";
+					password = e.toCharArray();
+				}
 				try {
 					DocClient.Login(name, String.valueOf(password), LoginFrame.this);
 				}catch(Exception e) {

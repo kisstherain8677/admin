@@ -49,7 +49,7 @@ public class mainFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public mainFrame() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		
 		JMenuBar menuBar = new JMenuBar();
@@ -64,7 +64,7 @@ public class mainFrame extends JFrame {
 			public void mousePressed(MouseEvent arg0) {
 				try {
 					userFrame userframe = new userFrame();
-					userframe.getTabbedPane().setSelectedIndex(0);
+					userframe.getTabbedPane().setSelectedIndex(1);
 					
 					userframe.setVisible(true);
 					
@@ -82,7 +82,7 @@ public class mainFrame extends JFrame {
 			public void mousePressed(MouseEvent arg0) {
 				try {
 					userFrame userframe = new userFrame();
-					userframe.getTabbedPane().setSelectedIndex(1);
+					userframe.getTabbedPane().setSelectedIndex(0);
 					userframe.setVisible(true);
 					
 				} catch (Exception e) {
@@ -117,7 +117,7 @@ public class mainFrame extends JFrame {
 		item_download.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				System.out.println("hhhh");
+				System.out.println("finding file...");
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						try {
