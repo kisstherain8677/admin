@@ -163,7 +163,13 @@ public class DocClient  extends JFrame
 	         }
 	         
 	         else if(message.equals("LOGIN_FALSE")) {
-	        	 JOptionPane.showMessageDialog(null, "登陆失败","提示" , JOptionPane.ERROR_MESSAGE);
+	        	 System.out.println("login error");
+	        	 JOptionPane.showMessageDialog(Jframe, "登陆失败","提示" , JOptionPane.ERROR_MESSAGE);//此处父类一定要写Jframe不然死循环
+	        	 
+	         }
+	         else if(message.equals("LOGIN_FALSE_ROLE")) {
+	        	 System.out.println("false_role");
+	        	 JOptionPane.showMessageDialog(Jframe, "此用户必须输入密码！","提示" , JOptionPane.ERROR_MESSAGE);
 	        	 
 	         }
 	         else if(message.equals("ADD_TRUE")) {
@@ -261,7 +267,7 @@ public class DocClient  extends JFrame
 	      ); 
 	   }  
    
-   synchronized public static void Download(String ID,JFrame frame,String objectPath) throws IOException {
+    public static void Download(String ID,JFrame frame,String objectPath) throws IOException {
 	   Jframe=frame;
 	   output.writeUTF("DOWNLOAD");
 	   output.flush();
@@ -271,7 +277,7 @@ public class DocClient  extends JFrame
        output.flush();
    }
    
-   synchronized public static void Upload(String ID,String Creator,String description,String filename,JFrame frame) throws IOException{
+    public static void Upload(String ID,String Creator,String description,String filename,JFrame frame) throws IOException{
 	   Jframe=frame;
 		   output.writeUTF("UPLOAD");
 	       output.flush();
@@ -299,7 +305,7 @@ public class DocClient  extends JFrame
 	       System.out.println("CLIENT>>> CLIENT_FILE_UP");
    }
 
-   synchronized public static void Login(String name,String password,JFrame frame) throws IOException {
+    public static void Login(String name,String password,JFrame frame) throws IOException {
 	   String login = "CLIENT>>> LOGIN";
 	   output.writeUTF(login);
 	   output.flush();
@@ -312,7 +318,18 @@ public class DocClient  extends JFrame
 	   
    }
    
-   synchronized public static void addUser(String name,String password,String role,JFrame frame) throws IOException {
+    public static void Login(String name,JFrame frame) throws IOException {
+	   String login = "CLIENT>>> LOGINOLD";
+	   output.writeUTF(login);
+	   output.flush();
+	   System.out.println(login);
+	   output.writeUTF(name);
+	   output.flush();
+	   Jframe = frame;
+	   
+   }
+   
+    public static void addUser(String name,String password,String role,JFrame frame) throws IOException {
 	   Jframe = frame;
 	   output.writeUTF("USER_ADD");
 	   output.flush();
@@ -325,7 +342,7 @@ public class DocClient  extends JFrame
 	   System.out.println("CLIENT>>> "+name+"USER_ADD");
    }
    
-   synchronized public static void updateUser(String name,String password,String role,JFrame frame) throws IOException {
+    public static void updateUser(String name,String password,String role,JFrame frame) throws IOException {
 	   Jframe = frame;
 	   output.writeUTF("USER_UPDATE");
 	   output.flush();
@@ -338,7 +355,7 @@ public class DocClient  extends JFrame
 	   System.out.println("CLIENT>>> "+name+"USER_UPDATE");
    }
    
-   synchronized public static void delUser(String name,JFrame frame) throws IOException{
+   public static void delUser(String name,JFrame frame) throws IOException{
 	   Jframe = frame;
 	   output.writeUTF("USER_DELETE");
 	   output.flush();
@@ -347,7 +364,7 @@ public class DocClient  extends JFrame
 	  System.out.println("CLIENT>>> "+name+"USER_DELETE");
    }
    
-   synchronized public static void changeSelf(String name,String password,JFrame frame)throws IOException{
+    public static void changeSelf(String name,String password,JFrame frame)throws IOException{
 	   Jframe = frame;
 	   output.writeUTF("USER_CHANGE_SELF");
 	   output.flush();

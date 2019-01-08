@@ -66,7 +66,7 @@ public  class DataProcessing {
 	
 	
 	
-	public static Doc searchDoc(String ID) throws SQLException, ClassNotFoundException {
+	 public static Doc searchDoc(String ID) throws SQLException, ClassNotFoundException {
 		    Statement statement=null;
 		    ResultSet resultSet=null;
 		    String id=null,creator=null,time=null,description=null,filename=null;
@@ -112,7 +112,7 @@ public  class DataProcessing {
 		return e;
 	} 
 	
-	public static int insertDoc( String creator, Timestamp timestamp, String description, String filename) throws SQLException, ClassNotFoundException{
+	synchronized public static int insertDoc( String creator, Timestamp timestamp, String description, String filename) throws SQLException, ClassNotFoundException{
 		
 		PreparedStatement pre=null;		
 		init();
@@ -177,7 +177,7 @@ public  class DataProcessing {
 	
 	
 	
-	public static boolean updateUser(String name, String password, String role) throws SQLException, ClassNotFoundException{
+	synchronized public static boolean updateUser(String name, String password, String role) throws SQLException, ClassNotFoundException{
 		
 		PreparedStatement pre=null;
 		init();
@@ -192,7 +192,7 @@ public  class DataProcessing {
 		return true;
 	}
 	
-	public static boolean insertUser(String name, String password, String role) throws SQLException, ClassNotFoundException{		
+	synchronized public static boolean insertUser(String name, String password, String role) throws SQLException, ClassNotFoundException{		
 		
 		PreparedStatement pre=null;
 		init();
@@ -212,7 +212,7 @@ public  class DataProcessing {
 		}
 	}
 	
-	public static boolean deleteUser(String name) throws SQLException, ClassNotFoundException{
+	synchronized public static boolean deleteUser(String name) throws SQLException, ClassNotFoundException{
 		PreparedStatement pre=null;
 		init();
 		if (users.containsKey(name)){

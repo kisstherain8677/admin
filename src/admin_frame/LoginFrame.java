@@ -20,6 +20,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JCheckBox;
 
 public class LoginFrame extends JFrame {
 
@@ -27,7 +28,7 @@ public class LoginFrame extends JFrame {
 	private static JPanel loginPane;
 	private JTextField textField;
 	private JPasswordField passwordField;
-	
+	JCheckBox checkBox;
 
 	/**
 	 * Launch the application.
@@ -93,12 +94,11 @@ public class LoginFrame extends JFrame {
 			public void mouseClicked(MouseEvent arg0) {
 				String name = textField.getText();
 				char[] password = passwordField.getPassword();
-				if(password==null) {
-					String e = "error";
-					password = e.toCharArray();
-				}
 				try {
-					DocClient.Login(name, String.valueOf(password), LoginFrame.this);
+					if(checkBox.isSelected())
+						DocClient.Login(name, LoginFrame.this);
+					else
+						DocClient.Login(name, String.valueOf(password), LoginFrame.this);
 				}catch(Exception e) {
 					e.printStackTrace();
 				}
@@ -110,6 +110,12 @@ public class LoginFrame extends JFrame {
 		JButton button_cancel = new JButton("È¡Ïû");
 		button_cancel.setBounds(249, 126, 113, 27);
 		loginPane.add(button_cancel);
+		
+		 checkBox = new JCheckBox("\u8BB0\u4F4F\u5BC6\u7801");
+		checkBox.setBounds(236, 94, 113, 27);
+		checkBox.setSelected(false);
+		
+		loginPane.add(checkBox);
 		button_cancel.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent arg0) {
 				LoginFrame.this.dispose();
@@ -122,6 +128,4 @@ public class LoginFrame extends JFrame {
 	public JFrame getloginFrame() {
 		return LoginFrame.this;
 	}
-	
-	
 }

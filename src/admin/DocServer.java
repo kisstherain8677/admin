@@ -168,6 +168,35 @@ public class DocServer
  		    		  
  		    	  }
  		    	  
+ 		    	 else if(message.equals("CLIENT>>> LOGINOLD")) {
+		    		  String name = input.readUTF();
+		    		  displayMessage("The server is searching user's information...");
+		    		  user = DataProcessing.searchUser(name);
+		    		  if(user!=null&&user.getRole().equalsIgnoreCase("Browser")) {
+		    			 output.writeUTF("LOGIN_TRUE");
+		    			 output.flush();//打开界面的行为交给客户端 服务端只用来传输数据
+			    		 
+		    			 output.writeUTF(user.getRole());
+			    		 output.flush();
+			    		 
+		    			 ObjectOutputStream objectoutput = new ObjectOutputStream(connection.getOutputStream());
+		    			 objectoutput.flush();
+		    			 objectoutput.writeObject(user);
+		    			 objectoutput.flush();
+		    		  }
+		    		  else {
+		    			  if(user!=null)
+		    				  {output.writeUTF("LOGIN_FALSE_ROLE");
+		    				   output.flush();
+		    				  }
+		    			  else {
+		    			    output.writeUTF("LOGIN_FALSE");
+		    			    output.flush();
+		    			  }
+		    		  }
+		    		  
+		    	  }
+ 		    	  
  		    	  else if(message.equals("USER_ADD")) {
  		    		  String name = input.readUTF();
  		    		  String password = input.readUTF();
